@@ -74,4 +74,9 @@ Thumbs.db
 .streamlit/
 
 # Windows
-run.bat 
+run.bat
+
+# 민감한 데이터 파일들
+직급별 출장비.csv
+연구과제명.csv
+business_trip_data.json 

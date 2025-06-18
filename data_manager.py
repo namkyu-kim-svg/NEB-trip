@@ -1,6 +1,7 @@
 import json
 import os
 import pandas as pd
+import streamlit as st
 
 # 기본 데이터 파일 경로
 DATA_FILE = "business_trip_data.json"
@@ -105,9 +106,15 @@ def get_data_summary(data=None):
     return summary
 
 def load_project_names():
-    """연구과제명.csv 파일에서 연구과제명 목록을 로드"""
+    """Streamlit Secrets 또는 연구과제명.csv 파일에서 연구과제명 목록을 로드"""
     try:
-        if os.path.exists(PROJECT_NAMES_FILE):
+        # 먼저 Streamlit Secrets에서 데이터를 로드하려고 시도
+        if hasattr(st, 'secrets') and 'project_names' in st.secrets:
+            # Streamlit Secrets에서 데이터 로드
+            return list(st.secrets["project_names"])
+        
+        # Streamlit Secrets가 없으면 CSV 파일에서 로드 (로컬 개발용)
+        elif os.path.exists(PROJECT_NAMES_FILE):
             df = pd.read_csv(PROJECT_NAMES_FILE, encoding='utf-8')
             # 첫 번째 열의 데이터를 리스트로 반환 (NaN 값 제외)
             project_names = df.iloc[:, 0].dropna().tolist()

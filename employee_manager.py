@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 from datetime import datetime, date
+import streamlit as st
 
 class EmployeeManager:
     """직원 정보 및 출장비 관리 클래스"""
@@ -10,9 +11,28 @@ class EmployeeManager:
         self.employee_data = self.load_employee_data()
     
     def load_employee_data(self):
-        """CSV 파일에서 직원 데이터 로드"""
+        """Streamlit Secrets 또는 CSV 파일에서 직원 데이터 로드"""
         try:
-            if os.path.exists(self.csv_file):
+            # 먼저 Streamlit Secrets에서 데이터를 로드하려고 시도
+            if hasattr(st, 'secrets') and 'employee_allowances' in st.secrets:
+                # Streamlit Secrets에서 데이터 로드
+                secrets_data = st.secrets["employee_allowances"]
+                
+                # 데이터를 DataFrame으로 변환
+                data = []
+                for name, info in secrets_data.items():
+                    data.append({
+                        '이름': name,
+                        '직급': info['position'],
+                        '일비': int(info['daily'].replace(',', '')),
+                        '식비': int(info['meal'].replace(',', ''))
+                    })
+                
+                df = pd.DataFrame(data)
+                return df
+            
+            # Streamlit Secrets가 없으면 CSV 파일에서 로드 (로컬 개발용)
+            elif os.path.exists(self.csv_file):
                 df = pd.read_csv(self.csv_file, encoding='cp949')
                 # 공백 제거 및 컬럼명 정리
                 df.columns = df.columns.str.strip()
