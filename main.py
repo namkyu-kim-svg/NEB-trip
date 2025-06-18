@@ -541,7 +541,7 @@ with tab2:
                     payment_method = st.text_area(
                         "결제 방식",
                         placeholder="예: 법인카드\n(3619)",
-                        height=60
+                        height=70
                     )
                     
                     # 금액 입력
