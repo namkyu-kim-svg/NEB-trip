@@ -111,20 +111,38 @@ def load_project_names():
         # 먼저 Streamlit Secrets에서 데이터를 로드하려고 시도
         if hasattr(st, 'secrets') and 'project_names' in st.secrets:
             # Streamlit Secrets에서 데이터 로드
-            return list(st.secrets["project_names"])
+            project_names = list(st.secrets["project_names"])
+            print(f"DEBUG: Secrets에서 연구과제명 로드됨: {len(project_names)}개")
+            return project_names
         
         # Streamlit Secrets가 없으면 CSV 파일에서 로드 (로컬 개발용)
         elif os.path.exists(PROJECT_NAMES_FILE):
             df = pd.read_csv(PROJECT_NAMES_FILE, encoding='utf-8')
             # 첫 번째 열의 데이터를 리스트로 반환 (NaN 값 제외)
             project_names = df.iloc[:, 0].dropna().tolist()
+            print(f"DEBUG: CSV에서 연구과제명 로드됨: {len(project_names)}개")
             return project_names
         else:
-            print(f"'{PROJECT_NAMES_FILE}' 파일이 존재하지 않습니다.")
-            return []
+            print(f"DEBUG: '{PROJECT_NAMES_FILE}' 파일이 존재하지 않습니다.")
+            # 기본 연구과제명 리스트 반환
+            default_projects = [
+                "해풍", "해평", "전자기장", "과학원_수생", "국립환경과학원_염증명",
+                "도화_염생식물", "미세조류DBs", "새만금개발청_새만금 고도화시설 구상",
+                "수과원_이차전지", "오염퇴적물", "초기위해성평가", "해영오염퇴적물",
+                "환경공단_생태독성 기술지원", "환경공단_이차전지 기술지원", "환경공단_이차전지 모니터링"
+            ]
+            print(f"DEBUG: 기본 연구과제명 사용: {len(default_projects)}개")
+            return default_projects
     except Exception as e:
         print(f"연구과제명 로드 오류: {e}")
-        return []
+        # 에러 발생 시 기본 리스트 반환
+        default_projects = [
+            "해풍", "해평", "전자기장", "과학원_수생", "국립환경과학원_염증명",
+            "도화_염생식물", "미세조류DBs", "새만금개발청_새만금 고도화시설 구상",
+            "수과원_이차전지", "오염퇴적물", "초기위해성평가", "해영오염퇴적물",
+            "환경공단_생태독성 기술지원", "환경공단_이차전지 기술지원", "환경공단_이차전지 모니터링"
+        ]
+        return default_projects
 
 def get_all_data():
     """모든 데이터를 통합하여 반환 (기본 데이터 + 연구과제명)"""
