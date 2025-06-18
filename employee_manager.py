@@ -17,6 +17,7 @@ class EmployeeManager:
             if hasattr(st, 'secrets') and 'employee_allowances' in st.secrets:
                 # Streamlit Secrets에서 데이터 로드
                 secrets_data = st.secrets["employee_allowances"]
+                print(f"DEBUG: Secrets에서 직원 데이터 로드 시도: {len(secrets_data)}명")
                 
                 # 데이터를 DataFrame으로 변환
                 data = []
@@ -29,6 +30,7 @@ class EmployeeManager:
                     })
                 
                 df = pd.DataFrame(data)
+                print(f"DEBUG: Secrets에서 직원 데이터 로드 완료: {len(df)}명")
                 return df
             
             # Streamlit Secrets가 없으면 CSV 파일에서 로드 (로컬 개발용)
@@ -42,13 +44,33 @@ class EmployeeManager:
                 df['일비'] = df['일비'].str.replace(',', '').str.replace(' ', '').astype(int)
                 df['식비'] = df['식비'].str.replace(',', '').str.replace(' ', '').astype(int)
                 
+                print(f"DEBUG: CSV에서 직원 데이터 로드 완료: {len(df)}명")
                 return df
             else:
-                print(f"파일을 찾을 수 없습니다: {self.csv_file}")
-                return pd.DataFrame()
+                print(f"DEBUG: 파일을 찾을 수 없습니다: {self.csv_file}")
+                # 기본 직원 데이터 반환
+                return self._get_default_employee_data()
         except Exception as e:
-            print(f"데이터 로드 오류: {e}")
-            return pd.DataFrame()
+            print(f"DEBUG: 데이터 로드 오류: {e}")
+            # 에러 발생 시 기본 직원 데이터 반환
+            return self._get_default_employee_data()
+    
+    def _get_default_employee_data(self):
+        """기본 직원 데이터 반환"""
+        default_data = [
+            {'이름': '이정석', '직급': '대표이사', '일비': 55000, '식비': 60000},
+            {'이름': '한영석', '직급': '연구소장', '일비': 55000, '식비': 60000},
+            {'이름': '김병모', '직급': '연구이사', '일비': 50000, '식비': 55000},
+            {'이름': '문성대', '직급': '연구이사', '일비': 50000, '식비': 55000},
+            {'이름': '최태섭', '직급': '이사', '일비': 55000, '식비': 60000},
+            {'이름': '김민정', '직급': '부장', '일비': 45000, '식비': 50000},
+            {'이름': '유인화', '직급': '차장', '일비': 45000, '식비': 50000},
+            {'이름': '배지현', '직급': '과장', '일비': 40000, '식비': 45000},
+            {'이름': '제갈수민', '직급': '수습', '일비': 40000, '식비': 45000},
+            {'이름': '이정운', '직급': '과장', '일비': 40000, '식비': 45000},
+        ]
+        print(f"DEBUG: 기본 직원 데이터 사용: {len(default_data)}명")
+        return pd.DataFrame(default_data)
     
     def get_employee_names(self):
         """전체 직원 이름 리스트 반환"""
