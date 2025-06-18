@@ -14,9 +14,75 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+# 🔐 비밀번호 인증 시스템
+def check_password():
+    """비밀번호 확인 함수"""
+    
+    def password_entered():
+        """비밀번호 입력 후 확인"""
+        if st.session_state["password"] == "neb1234":
+            st.session_state["password_correct"] = True
+            del st.session_state["password"]  # 보안을 위해 비밀번호 삭제
+        else:
+            st.session_state["password_correct"] = False
+
+    # 세션 상태 초기화
+    if "password_correct" not in st.session_state:
+        st.session_state["password_correct"] = False
+
+    # 비밀번호가 맞지 않으면 로그인 화면 표시
+    if not st.session_state["password_correct"]:
+        # 로그인 화면 스타일링
+        st.markdown("""
+        <div style="text-align: center; padding: 50px;">
+            <h1>🔐 출장문서 자동화 시스템</h1>
+            <p style="font-size: 18px; color: #666;">시스템을 사용하려면 비밀번호를 입력하세요</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # 중앙 정렬을 위한 컬럼 구성
+        col1, col2, col3 = st.columns([1, 2, 1])
+        
+        with col2:
+            # 비밀번호 입력 폼
+            with st.form("password_form"):
+                st.text_input(
+                    "🔑 비밀번호",
+                    type="password",
+                    key="password",
+                    placeholder="비밀번호를 입력하세요"
+                )
+                
+                submitted = st.form_submit_button("🚀 로그인", use_container_width=True)
+                
+                if submitted:
+                    password_entered()
+        
+        # 비밀번호 틀렸을 때 경고 메시지
+        if "password_correct" in st.session_state and not st.session_state["password_correct"]:
+            st.error("❌ 비밀번호가 틀렸습니다. 다시 시도해주세요.")
+            
+        # 로그인 안내 메시지
+        st.info("💡 비밀번호를 입력하면 출장문서 자동화 시스템을 사용할 수 있습니다.")
+        
+        return False
+    else:
+        return True
+
+# 비밀번호 확인
+if not check_password():
+    st.stop()
+
 # 메인 제목
 st.title("📋 출장문서 자동화 시스템")
 st.markdown("---")
+
+# 로그아웃 버튼 (사이드바에 추가)
+with st.sidebar:
+    st.markdown("---")
+    if st.button("🚪 로그아웃", type="secondary"):
+        st.session_state["password_correct"] = False
+        st.rerun()
 
 # 탭 구성
 tab1, tab2 = st.tabs(["📝 출장신청서", "📋 출장복명서"])
