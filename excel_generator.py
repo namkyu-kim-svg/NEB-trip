@@ -615,7 +615,7 @@ def apply_advanced_styles(ws, auto_dimensions, data_end_row):
             elif row == bottom_start_row + 3:  # "주식회사 엔이비" 바로 아래 행
                 cell.border = black_border  # 테두리 생성
             # 그 아래로 5번째 행 - 테두리 생성
-            elif row == bottom_start_row + 8:  # 5번째 행 아래
+            elif row == bottom_start_row + 7:  # 5번째 행 아래
                 cell.border = black_border  # 테두리 생성
             # 추가수당 섹션 아래에 굵은 테두리 적용 (동적 페이지 구분선)
             elif row == page_break_row:
@@ -708,7 +708,7 @@ def apply_advanced_styles(ws, auto_dimensions, data_end_row):
                       end_row=merge_row_1, end_column=12)
         
         # "주식회사 엔이비" 아래 5번째 행 병합 (A열부터 L열까지)
-        merge_row_2 = bottom_start_row + 8
+        merge_row_2 = bottom_start_row + 7
         ws.merge_cells(start_row=merge_row_2, start_column=1, 
                       end_row=merge_row_2, end_column=12)
         
