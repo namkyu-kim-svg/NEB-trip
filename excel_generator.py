@@ -607,21 +607,39 @@ def apply_advanced_styles(ws, auto_dimensions, data_end_row):
             # 데이터 영역 (13행부터 data_end_row까지)는 모든 테두리 적용
             elif 13 <= row <= data_end_row:
                 cell.border = black_border
-            # 추가수당 섹션 위쪽 테두리 (extra_row-1행)와 아래쪽 테두리 (extra_row+3행) 제거
+            # 추가수당 섹션 위쪽 행 (24행) - 아래 테두리 제거
             elif row == extra_row - 1:  # 24행 (추가수당 섹션 위쪽)
                 cell.border = Border(
                     left=Side(style='thin', color='000000'),
                     right=Side(style='thin', color='000000'),
                     top=Side(style='thin', color='000000'),
-                    bottom=None  # 아래 테두리 없음 (추가수당 섹션과의 경계)
+                    bottom=None  # 아래 테두리 없음
                 )
-            elif extra_row <= row <= extra_row + 2:  # 25-27행 (추가수당 섹션 내용)
-                cell.border = black_border  # 정상적인 테두리
+            # 추가수당 섹션 첫 번째 행 (25행) - 위 테두리 제거
+            elif row == extra_row:  # 25행 (추가수당 섹션 시작)
+                cell.border = Border(
+                    left=Side(style='thin', color='000000'),
+                    right=Side(style='thin', color='000000'),
+                    top=None,  # 위 테두리 없음
+                    bottom=Side(style='thin', color='000000')
+                )
+            # 추가수당 섹션 중간 행 (26행) - 정상 테두리
+            elif row == extra_row + 1:  # 26행 (추가수당 섹션 중간)
+                cell.border = black_border
+            # 추가수당 섹션 마지막 행 (27행) - 아래 테두리 제거
+            elif row == extra_row + 2:  # 27행 (추가수당 섹션 끝)
+                cell.border = Border(
+                    left=Side(style='thin', color='000000'),
+                    right=Side(style='thin', color='000000'),
+                    top=Side(style='thin', color='000000'),
+                    bottom=None  # 아래 테두리 없음
+                )
+            # 추가수당 섹션 아래쪽 행 (28행) - 위 테두리 제거
             elif row == extra_row + 3:  # 28행 (추가수당 섹션 아래쪽)
                 cell.border = Border(
                     left=Side(style='thin', color='000000'),
                     right=Side(style='thin', color='000000'),
-                    top=None,  # 위 테두리 없음 (추가수당 섹션과의 경계)
+                    top=None,  # 위 테두리 없음
                     bottom=Side(style='thin', color='000000')
                 )
             # 추가수당 섹션 아래에 굵은 테두리 적용 (동적 페이지 구분선)
@@ -708,23 +726,7 @@ def apply_advanced_styles(ws, auto_dimensions, data_end_row):
         col_letter = openpyxl.utils.get_column_letter(col)
         ws.column_dimensions[col_letter].width = auto_dimensions['col_width']
     
-    # 추가수당 섹션 위아래 행 병합 처리
-    try:
-        # 24행과 25행을 병합 (추가수당 섹션 위쪽)
-        merge_row_above = extra_row - 1  # 24행
-        merge_row_start = extra_row      # 25행
-        ws.merge_cells(start_row=merge_row_above, start_column=1, 
-                      end_row=merge_row_start, end_column=12)
-        
-        # 27행과 28행을 병합 (추가수당 섹션 아래쪽)
-        merge_row_end = extra_row + 2    # 27행
-        merge_row_below = extra_row + 3  # 28행
-        ws.merge_cells(start_row=merge_row_end, start_column=1, 
-                      end_row=merge_row_below, end_column=12)
-        
-    except Exception as e:
-        print(f"추가수당 섹션 셀 병합 중 오류 발생: {e}")
-        pass
+
 
 def create_business_trip_application(application_data, filename="출장신청서.xlsx"):
     """
