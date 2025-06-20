@@ -676,11 +676,15 @@ def apply_advanced_styles(ws, auto_dimensions, data_end_row):
         12: 18,   # 12행: 헤더 - 절반으로 줄임
     }
     
-    # 13행부터 데이터 끝까지 18pt로 설정
+    # 13행부터 데이터 끝까지 20pt로 설정 (출장자 데이터)
     for row_num in range(13, data_end_row + 1):
-        row_heights[row_num] = 20  # 데이터 행들 모두 18pt
+        row_heights[row_num] = 20  # 출장자 데이터 행들 20pt
     
-    # 합계 행도 18pt
+    # 추가비용 관리 항목들 (25-27행)은 25pt로 설정
+    for row_num in range(extra_row, extra_row + 3):  # 25-27행
+        row_heights[row_num] = 25  # 추가비용 관리 항목들 25pt
+    
+    # 합계 행도 20pt
     row_heights[data_end_row + 1] = 20
     
     # 하단 문구들 간격 조정
