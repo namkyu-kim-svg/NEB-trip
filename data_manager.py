@@ -73,7 +73,16 @@ def remove_data(data_type, value, data=None):
 
 def reset_to_default():
     """기본 데이터로 초기화"""
+    # 기본 데이터 저장
     save_data(DEFAULT_DATA)
+    
+    # Streamlit 캐시 클리어 (만약 캐시된 데이터가 있다면)
+    if hasattr(st, 'cache_data'):
+        st.cache_data.clear()
+    if hasattr(st, 'cache_resource'):
+        st.cache_resource.clear()
+    
+    print("DEBUG: 데이터가 초기화되었습니다.")
     return DEFAULT_DATA.copy()
 
 # 데이터 검증 함수들
@@ -110,9 +119,12 @@ def load_project_names():
     try:
         # 먼저 Streamlit Secrets에서 데이터를 로드하려고 시도
         if hasattr(st, 'secrets') and 'project_names' in st.secrets:
-            # Streamlit Secrets에서 데이터 로드
+            # Streamlit Secrets에서 데이터 로드 (강제 새로고침)
             project_names = list(st.secrets["project_names"])
             print(f"DEBUG: Secrets에서 연구과제명 로드됨: {len(project_names)}개")
+            # 디버그용 첫 3개 항목 출력
+            if len(project_names) > 0:
+                print(f"DEBUG: 첫 3개 항목: {project_names[:3]}")
             return project_names
         
         # Streamlit Secrets가 없으면 CSV 파일에서 로드 (로컬 개발용)

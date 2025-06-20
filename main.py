@@ -75,6 +75,36 @@ if not check_password():
 
 # 메인 제목
 st.title("📋 출장문서 자동화 시스템")
+
+# 🔍 Secrets 디버깅 정보 (임시)
+if st.sidebar.button("🔍 Secrets 상태 확인", type="secondary"):
+    st.sidebar.write("**Secrets 디버깅 정보:**")
+    
+    # Secrets 존재 여부 확인
+    has_secrets = hasattr(st, 'secrets')
+    st.sidebar.write(f"- Secrets 사용 가능: {has_secrets}")
+    
+    if has_secrets:
+        # employee_allowances 확인
+        has_emp_allowances = 'employee_allowances' in st.secrets
+        st.sidebar.write(f"- employee_allowances 존재: {has_emp_allowances}")
+        
+        if has_emp_allowances:
+            emp_count = len(st.secrets["employee_allowances"])
+            st.sidebar.write(f"- 직원 수: {emp_count}명")
+        
+        # project_names 확인
+        has_project_names = 'project_names' in st.secrets
+        st.sidebar.write(f"- project_names 존재: {has_project_names}")
+        
+        if has_project_names:
+            project_count = len(st.secrets["project_names"])
+            st.sidebar.write(f"- 연구과제 수: {project_count}개")
+            # 첫 3개 과제명 표시
+            if project_count > 0:
+                first_three = list(st.secrets["project_names"])[:3]
+                st.sidebar.write(f"- 첫 3개: {first_three}")
+
 st.markdown("---")
 # Secrets 업데이트 테스트 - 2024.12.30
 
