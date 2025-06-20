@@ -294,7 +294,7 @@ def create_advanced_business_trip_report(employees_data, additional_costs, filen
         ws.cell(row=second_page_start, column=1, value='* 2페이지에 선박 승선 증빙 사진 첨부')
     
     # 스타일 적용
-    apply_advanced_styles(ws, auto_dimensions, current_row)
+    apply_advanced_styles(ws, auto_dimensions, current_row, additional_costs)
     
     # 페이지 설정 적용 (동적 페이지 나누기 포함)
     setup_page_settings_advanced(ws, page_break_row)
@@ -573,7 +573,7 @@ def setup_page_settings_advanced(ws, page_break_row):
     ws.sheet_view.view = 'pageBreakPreview'
     ws.sheet_view.zoomScale = 100
 
-def apply_advanced_styles(ws, auto_dimensions, data_end_row):
+def apply_advanced_styles(ws, auto_dimensions, data_end_row, additional_costs=None):
     """스타일 적용"""
     
     # 다양한 폰트 설정
@@ -676,13 +676,20 @@ def apply_advanced_styles(ws, auto_dimensions, data_end_row):
         12: 18,   # 12행: 헤더 - 절반으로 줄임
     }
     
-    # 13행부터 데이터 끝까지 20pt로 설정 (출장자 데이터)
-    for row_num in range(13, data_end_row + 1):
-        row_heights[row_num] = 20  # 출장자 데이터 행들 20pt
+    # 추가비용 데이터는 13행부터 시작하므로 동적으로 계산
+    # 추가비용 항목들은 25pt로 설정
+    additional_costs_count = len(set(cost['item'] for cost in additional_costs)) if additional_costs else 0
+    additional_costs_end_row = 13 + additional_costs_count - 1 if additional_costs_count > 0 else 12
     
-    # 추가비용 관리 항목들 (25-27행)은 25pt로 설정
-    for row_num in range(extra_row, extra_row + 3):  # 25-27행
-        row_heights[row_num] = 25  # 추가비용 관리 항목들 25pt
+    # 13행부터 추가비용 끝까지 25pt로 설정
+    if additional_costs_count > 0:
+        for row_num in range(13, additional_costs_end_row + 1):
+            row_heights[row_num] = 25  # 추가비용 항목들 25pt
+    
+    # 출장자 데이터는 추가비용 다음부터 data_end_row까지 20pt로 설정
+    employee_start_row = additional_costs_end_row + 1 if additional_costs_count > 0 else 13
+    for row_num in range(employee_start_row, data_end_row + 1):
+        row_heights[row_num] = 20  # 출장자 데이터 행들 20pt
     
     # 합계 행도 20pt
     row_heights[data_end_row + 1] = 20
