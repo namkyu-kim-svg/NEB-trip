@@ -611,12 +611,12 @@ def apply_advanced_styles(ws, auto_dimensions, data_end_row):
             # 추가수당 섹션 (25-27행) - 정상 테두리 유지
             elif extra_row <= row <= extra_row + 2:  # 25-27행 (추가수당 섹션)
                 cell.border = black_border  # 정상적인 테두리
-            # "주식회사 엔이비" 바로 아래 행 - 테두리 제거
+            # "주식회사 엔이비" 바로 아래 행 - 테두리 생성
             elif row == bottom_start_row + 3:  # "주식회사 엔이비" 바로 아래 행
-                cell.border = None  # 모든 테두리 제거
-            # 그 아래로 5번째 행 - 테두리 제거  
+                cell.border = black_border  # 테두리 생성
+            # 그 아래로 5번째 행 - 테두리 생성
             elif row == bottom_start_row + 8:  # 5번째 행 아래
-                cell.border = None  # 모든 테두리 제거
+                cell.border = black_border  # 테두리 생성
             # 추가수당 섹션 아래에 굵은 테두리 적용 (동적 페이지 구분선)
             elif row == page_break_row:
                 cell.border = Border(
@@ -700,6 +700,21 @@ def apply_advanced_styles(ws, auto_dimensions, data_end_row):
         col_letter = openpyxl.utils.get_column_letter(col)
         ws.column_dimensions[col_letter].width = auto_dimensions['col_width']
     
+    # "주식회사 엔이비" 관련 행 병합 처리
+    try:
+        # "주식회사 엔이비" 바로 아래 행 병합 (A열부터 L열까지)
+        merge_row_1 = bottom_start_row + 3
+        ws.merge_cells(start_row=merge_row_1, start_column=1, 
+                      end_row=merge_row_1, end_column=12)
+        
+        # "주식회사 엔이비" 아래 5번째 행 병합 (A열부터 L열까지)
+        merge_row_2 = bottom_start_row + 8
+        ws.merge_cells(start_row=merge_row_2, start_column=1, 
+                      end_row=merge_row_2, end_column=12)
+        
+    except Exception as e:
+        print(f"셀 병합 중 오류 발생: {e}")
+        pass
 
 
 def create_business_trip_application(application_data, filename="출장신청서.xlsx"):
