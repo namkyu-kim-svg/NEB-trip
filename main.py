@@ -220,9 +220,17 @@ with tab1:
             app_destination = app_destination_option
     
     # 연구과제명
+    # 안전하게 project_names 가져오기
+    try:
+        project_names = data.get('project_names', [])
+        if not isinstance(project_names, list):
+            project_names = []
+    except:
+        project_names = []
+    
     app_project_name_option = st.selectbox(
         "📋 연구과제명 (선택 또는 직접 입력)",
-        options=["직접 입력"] + data.get('project_names', []),
+        options=["직접 입력"] + project_names,
         key="app_project_name_option"
     )
     
@@ -477,9 +485,17 @@ with tab2:
             destination = destination_option
     
     # 연구과제명 - 드롭다운 + 직접입력 가능
+    # 안전하게 project_names 가져오기
+    try:
+        project_names_list = data.get('project_names', [])
+        if not isinstance(project_names_list, list):
+            project_names_list = []
+    except:
+        project_names_list = []
+    
     project_name_option = st.selectbox(
         "📋 연구과제명 (선택 또는 직접 입력)",
-        options=["직접 입력"] + data.get('project_names', []),
+        options=["직접 입력"] + project_names_list,
         key="project_name_option"
     )
     
