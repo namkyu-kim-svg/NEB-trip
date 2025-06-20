@@ -592,7 +592,8 @@ def apply_advanced_styles(ws, auto_dimensions, data_end_row):
     )
     
     # 추가수당 섹션 아래 굵은 밑줄을 위한 행 계산
-    bottom_row = data_end_row + 2  # "위와 같이..." 시작 행
+    bottom_start_row = data_end_row + 2  # "위와 같이..." 시작 행
+    bottom_row = bottom_start_row  # "위와 같이..." 시작 행 (기존 호환성)
     extra_row = bottom_row + 4     # 추가수당 시작 행
     page_break_row = extra_row + 3 # 추가수당 섹션 끝 (3행에 걸쳐 있음)
     
@@ -683,7 +684,6 @@ def apply_advanced_styles(ws, auto_dimensions, data_end_row):
     row_heights[data_end_row + 1] = 20
     
     # 하단 문구들 간격 조정
-    bottom_start_row = data_end_row + 2  # "위와 같이 출장 복명서를 제출합니다" 시작 행
     row_heights[bottom_start_row] = 22      # "위와 같이 출장 복명서를 제출합니다" 
     row_heights[bottom_start_row + 1] = 22  # 날짜
     row_heights[bottom_start_row + 2] = 22  # "주식회사 엔이비"
