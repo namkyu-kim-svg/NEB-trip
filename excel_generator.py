@@ -607,41 +607,12 @@ def apply_advanced_styles(ws, auto_dimensions, data_end_row):
             # 데이터 영역 (13행부터 data_end_row까지)는 모든 테두리 적용
             elif 13 <= row <= data_end_row:
                 cell.border = black_border
-            # 추가수당 섹션 위쪽 행 (24행) - 아래 테두리 제거
-            elif row == extra_row - 1:  # 24행 (추가수당 섹션 위쪽)
-                cell.border = Border(
-                    left=Side(style='thin', color='000000'),
-                    right=Side(style='thin', color='000000'),
-                    top=Side(style='thin', color='000000'),
-                    bottom=None  # 아래 테두리 없음
-                )
-            # 추가수당 섹션 첫 번째 행 (25행) - 위 테두리 제거
-            elif row == extra_row:  # 25행 (추가수당 섹션 시작)
-                cell.border = Border(
-                    left=Side(style='thin', color='000000'),
-                    right=Side(style='thin', color='000000'),
-                    top=None,  # 위 테두리 없음
-                    bottom=Side(style='thin', color='000000')
-                )
-            # 추가수당 섹션 중간 행 (26행) - 정상 테두리
-            elif row == extra_row + 1:  # 26행 (추가수당 섹션 중간)
-                cell.border = black_border
-            # 추가수당 섹션 마지막 행 (27행) - 아래 테두리 제거
-            elif row == extra_row + 2:  # 27행 (추가수당 섹션 끝)
-                cell.border = Border(
-                    left=Side(style='thin', color='000000'),
-                    right=Side(style='thin', color='000000'),
-                    top=Side(style='thin', color='000000'),
-                    bottom=None  # 아래 테두리 없음
-                )
-            # 추가수당 섹션 아래쪽 행 (28행) - 위 테두리 제거
-            elif row == extra_row + 3:  # 28행 (추가수당 섹션 아래쪽)
-                cell.border = Border(
-                    left=Side(style='thin', color='000000'),
-                    right=Side(style='thin', color='000000'),
-                    top=None,  # 위 테두리 없음
-                    bottom=Side(style='thin', color='000000')
-                )
+            # "주식회사 엔이비" 바로 아래 행 - 테두리 제거
+            elif row == bottom_start_row + 3:  # "주식회사 엔이비" 바로 아래 행
+                cell.border = None  # 모든 테두리 제거
+            # 그 아래로 5번째 행 - 테두리 제거  
+            elif row == bottom_start_row + 8:  # 5번째 행 아래
+                cell.border = None  # 모든 테두리 제거
             # 추가수당 섹션 아래에 굵은 테두리 적용 (동적 페이지 구분선)
             elif row == page_break_row:
                 cell.border = Border(
