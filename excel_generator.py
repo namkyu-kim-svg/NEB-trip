@@ -607,6 +607,14 @@ def apply_advanced_styles(ws, auto_dimensions, data_end_row):
             # 데이터 영역 (13행부터 data_end_row까지)는 모든 테두리 적용
             elif 13 <= row <= data_end_row:
                 cell.border = black_border
+            # 추가수당 섹션 (extra_row부터 extra_row+2까지)는 위아래 테두리 없음
+            elif extra_row <= row <= extra_row + 2:
+                cell.border = Border(
+                    left=Side(style='thin', color='000000'),
+                    right=Side(style='thin', color='000000'),
+                    top=None,  # 위 테두리 없음
+                    bottom=None  # 아래 테두리 없음
+                )
             # 추가수당 섹션 아래에 굵은 테두리 적용 (동적 페이지 구분선)
             elif row == page_break_row:
                 cell.border = Border(
