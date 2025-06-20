@@ -607,6 +607,9 @@ def apply_advanced_styles(ws, auto_dimensions, data_end_row):
             # 데이터 영역 (13행부터 data_end_row까지)는 모든 테두리 적용
             elif 13 <= row <= data_end_row:
                 cell.border = black_border
+            # 추가수당 섹션 (25-27행) - 정상 테두리 유지
+            elif extra_row <= row <= extra_row + 2:  # 25-27행 (추가수당 섹션)
+                cell.border = black_border  # 정상적인 테두리
             # "주식회사 엔이비" 바로 아래 행 - 테두리 제거
             elif row == bottom_start_row + 3:  # "주식회사 엔이비" 바로 아래 행
                 cell.border = None  # 모든 테두리 제거
