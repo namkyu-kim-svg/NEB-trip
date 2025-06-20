@@ -707,6 +707,24 @@ def apply_advanced_styles(ws, auto_dimensions, data_end_row):
     for col in range(1, 13):  # A~L열
         col_letter = openpyxl.utils.get_column_letter(col)
         ws.column_dimensions[col_letter].width = auto_dimensions['col_width']
+    
+    # 추가수당 섹션 위아래 행 병합 처리
+    try:
+        # 24행과 25행을 병합 (추가수당 섹션 위쪽)
+        merge_row_above = extra_row - 1  # 24행
+        merge_row_start = extra_row      # 25행
+        ws.merge_cells(start_row=merge_row_above, start_column=1, 
+                      end_row=merge_row_start, end_column=12)
+        
+        # 27행과 28행을 병합 (추가수당 섹션 아래쪽)
+        merge_row_end = extra_row + 2    # 27행
+        merge_row_below = extra_row + 3  # 28행
+        ws.merge_cells(start_row=merge_row_end, start_column=1, 
+                      end_row=merge_row_below, end_column=12)
+        
+    except Exception as e:
+        print(f"추가수당 섹션 셀 병합 중 오류 발생: {e}")
+        pass
 
 def create_business_trip_application(application_data, filename="출장신청서.xlsx"):
     """
