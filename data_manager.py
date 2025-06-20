@@ -248,9 +248,26 @@ def load_project_names():
 def get_all_data():
     """모든 데이터를 통합하여 반환 (기본 데이터 + 연구과제명)"""
     data = load_data()
-    project_names = load_project_names()
     
-    # 연구과제명 추가
-    data["project_names"] = project_names
-    
-    return data
+    # 연구과제명을 Secrets에서 직접 가져오기 (employee_manager 방식과 동일)
+    try:
+        if hasattr(st, 'secrets') and 'project_names' in st.secrets:
+            print("DEBUG: get_all_data - Secrets에서 project_names 직접 로드 시도")
+            # 직접 접근 (employee_manager와 동일한 방식)
+            project_names = list(st.secrets["project_names"])
+            print(f"DEBUG: get_all_data - Secrets에서 {len(project_names)}개 직접 로드 완료")
+            if len(project_names) > 0:
+                print(f"DEBUG: get_all_data - 첫 3개: {project_names[:3]}")
+            data["project_names"] = project_names
+            return data
+        else:
+            print("DEBUG: get_all_data - Secrets에 project_names 없음, load_project_names() 사용")
+            project_names = load_project_names()
+            data["project_names"] = project_names
+            return data
+    except Exception as e:
+        print(f"DEBUG: get_all_data - 오류 발생: {e}")
+        # 오류 발생 시 기존 방식 사용
+        project_names = load_project_names()
+        data["project_names"] = project_names
+        return data
