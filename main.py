@@ -76,7 +76,7 @@ if not check_password():
 # 메인 제목
 st.title("📋 출장문서 자동화 시스템")
 
-# 🔍 Secrets 디버깅 정보 (임시)
+# 🔍 Secrets 디버깅 정보 (강화됨)
 if st.sidebar.button("🔍 Secrets 상태 확인", type="secondary"):
     st.sidebar.write("**Secrets 디버깅 정보:**")
     
@@ -85,6 +85,13 @@ if st.sidebar.button("🔍 Secrets 상태 확인", type="secondary"):
     st.sidebar.write(f"- Secrets 사용 가능: {has_secrets}")
     
     if has_secrets:
+        # 모든 Secrets 키 표시
+        try:
+            all_keys = list(st.secrets.keys())
+            st.sidebar.write(f"- 모든 Secrets 키: {all_keys}")
+        except Exception as e:
+            st.sidebar.error(f"키 목록 오류: {e}")
+        
         # employee_allowances 확인
         has_emp_allowances = 'employee_allowances' in st.secrets
         st.sidebar.write(f"- employee_allowances 존재: {has_emp_allowances}")
@@ -106,6 +113,23 @@ if st.sidebar.button("🔍 Secrets 상태 확인", type="secondary"):
                 st.sidebar.write(f"- 첫 3개: {first_three}")
         else:
             st.sidebar.warning("⚠️ project_names가 인식되지 않음!")
+            
+            # 유사한 키 찾기
+            try:
+                similar_keys = [key for key in st.secrets.keys() if 'project' in key.lower()]
+                if similar_keys:
+                    st.sidebar.write(f"- 유사한 키 발견: {similar_keys}")
+                    for key in similar_keys:
+                        try:
+                            count = len(st.secrets[key])
+                            st.sidebar.write(f"  - {key}: {count}개 항목")
+                        except:
+                            st.sidebar.write(f"  - {key}: 로드 실패")
+                else:
+                    st.sidebar.write("- 유사한 키 없음")
+            except:
+                pass
+                
             st.sidebar.info("💡 임시 해결책: 업데이트된 연구과제명 목록을 기본값으로 사용 중")
 
 # 🔧 강제 업데이트 버튼 (임시 해결책)
@@ -113,6 +137,24 @@ if st.sidebar.button("🔄 연구과제명 강제 업데이트", type="primary")
     st.sidebar.success("✅ 연구과제명이 최신 버전으로 업데이트되었습니다!")
     st.sidebar.info("이제 앱을 새로고침해보세요.")
     st.rerun()
+
+# 🛠️ Secrets 문제 해결 가이드
+with st.sidebar.expander("🛠️ Secrets 문제 해결 가이드"):
+    st.write("**1단계: Secrets 재설정**")
+    st.code("""
+App Settings > Secrets에서:
+1. 기존 내용 전체 삭제
+2. Save changes 클릭
+3. 올바른 TOML 형식으로 다시 입력
+4. Save changes 클릭
+5. 앱 Reboot
+    """)
+    
+    st.write("**2단계: TOML 형식 확인**")
+    st.write("❌ 잘못된 형식:")
+    st.code('project_names = [...] // 주석', language='toml')
+    st.write("✅ 올바른 형식:")
+    st.code('project_names = [...]\n# 주석은 새 줄에', language='toml')
 
 st.markdown("---")
 # Secrets 업데이트 테스트 - 2024.12.30

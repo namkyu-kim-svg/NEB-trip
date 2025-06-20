@@ -118,14 +118,39 @@ def load_project_names():
     """Streamlit Secrets 또는 연구과제명.csv 파일에서 연구과제명 목록을 로드"""
     try:
         # 먼저 Streamlit Secrets에서 데이터를 로드하려고 시도
-        if hasattr(st, 'secrets') and 'project_names' in st.secrets:
-            # Streamlit Secrets에서 데이터 로드 (강제 새로고침)
-            project_names = list(st.secrets["project_names"])
-            print(f"DEBUG: Secrets에서 연구과제명 로드됨: {len(project_names)}개")
-            # 디버그용 첫 3개 항목 출력
-            if len(project_names) > 0:
-                print(f"DEBUG: 첫 3개 항목: {project_names[:3]}")
-            return project_names
+        if hasattr(st, 'secrets'):
+            print(f"DEBUG: Secrets 사용 가능, 모든 키 확인 중...")
+            print(f"DEBUG: Secrets 키 목록: {list(st.secrets.keys()) if hasattr(st.secrets, 'keys') else 'N/A'}")
+            
+            # project_names가 있는지 확인
+            if 'project_names' in st.secrets:
+                # Streamlit Secrets에서 데이터 로드 (강제 새로고침)
+                project_names = list(st.secrets["project_names"])
+                print(f"DEBUG: Secrets에서 연구과제명 로드됨: {len(project_names)}개")
+                # 디버그용 첫 3개 항목 출력
+                if len(project_names) > 0:
+                    print(f"DEBUG: 첫 3개 항목: {project_names[:3]}")
+                return project_names
+            else:
+                print("DEBUG: project_names 키가 Secrets에 존재하지 않음")
+                # Secrets에 있는 모든 키 출력
+                try:
+                    all_keys = list(st.secrets.keys())
+                    print(f"DEBUG: 사용 가능한 Secrets 키: {all_keys}")
+                except:
+                    print("DEBUG: Secrets 키 목록을 가져올 수 없음")
+                    
+                # 강제로 다시 시도 (대소문자 구분 없이)
+                for key in st.secrets:
+                    if 'project' in key.lower():
+                        print(f"DEBUG: 유사한 키 발견: {key}")
+                        try:
+                            project_names = list(st.secrets[key])
+                            print(f"DEBUG: {key}에서 연구과제명 로드됨: {len(project_names)}개")
+                            return project_names
+                        except Exception as e:
+                            print(f"DEBUG: {key} 로드 실패: {e}")
+                            continue
         
         # Streamlit Secrets가 없으면 CSV 파일에서 로드 (로컬 개발용)  
         elif os.path.exists(PROJECT_NAMES_FILE):
