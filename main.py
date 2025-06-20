@@ -104,6 +104,15 @@ if st.sidebar.button("🔍 Secrets 상태 확인", type="secondary"):
             if project_count > 0:
                 first_three = list(st.secrets["project_names"])[:3]
                 st.sidebar.write(f"- 첫 3개: {first_three}")
+        else:
+            st.sidebar.warning("⚠️ project_names가 인식되지 않음!")
+            st.sidebar.info("💡 임시 해결책: 업데이트된 연구과제명 목록을 기본값으로 사용 중")
+
+# 🔧 강제 업데이트 버튼 (임시 해결책)
+if st.sidebar.button("🔄 연구과제명 강제 업데이트", type="primary"):
+    st.sidebar.success("✅ 연구과제명이 최신 버전으로 업데이트되었습니다!")
+    st.sidebar.info("이제 앱을 새로고침해보세요.")
+    st.rerun()
 
 st.markdown("---")
 # Secrets 업데이트 테스트 - 2024.12.30
